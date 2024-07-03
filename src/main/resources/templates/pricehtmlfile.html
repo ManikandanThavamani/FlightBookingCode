@@ -1,0 +1,56 @@
+<!DOCTYPE html> 
+<html xmlns:th="http://www.thymeleaf.org"> 
+	<head> 
+		<title>Price Calculation</title> 
+		<script> 
+			document.addEventListener('DOMContentLoaded', function() { 
+				let formCount = 1; 
+				const formsContainer = document.getElementById('formsContainer'); 
+				const totalPriceElement = document.getElementById('totalPrice'); 
+				let unitPrice = 100; 
+			// Example unit price, can be dynamically set 
+			document.getElementById('addFormButton').addEventListener('click', function() { 
+				formCount++; 
+				const newForm = document.createElement('div'); 
+				newForm.innerHTML = ` 
+				<div class="form-group" id="form-${formCount}"> 
+				<label for="quantity-${formCount}">Quantity:</label> 
+				<input type="number" id="quantity-${formCount}" class="quantity" value="1" min="1" required /> 
+				<label>Unit Price: $<span class="unitPrice">${unitPrice}</span></label> 
+				<button type="button" onclick="removeForm(${formCount})">Remove</button> 
+			</div> `; 
+			formsContainer.appendChild(newForm); 
+			updateTotalPrice();
+		}); 
+			formsContainer.addEventListener('input', function(event) { 
+				if (event.target.classList.contains('quantity')) { updateTotalPrice(); } 
+			}); 
+				function updateTotalPrice() { 
+					let totalQuantity = 0; 
+					document.querySelectorAll('.quantity').forEach(function(input) { 
+						totalQuantity += parseInt(input.value); }); totalPriceElement.textContent = totalQuantity * unitPrice; } 
+				window.removeForm = function(formId) { 
+					document.getElementById(`form-${formId}`).remove(); 
+					updateTotalPrice(); } 
+			updateTotalPrice(); // Initial call to set the price based on default form
+		 }); 
+		</script>
+	 </head> 
+	 <body> 
+		<h1>Price Calculation</h1> 
+			<div id="formsContainer"> 
+				<div class="form-group" id="form-1"> 
+					<label for="quantity-1">Quantity:</label> 
+					<input type="number" id="quantity-1" class="quantity" value="1" min="1" required /> 
+					<label>Unit Price: $
+						<span class="unitPrice">100</span>
+					</label> 
+				</div> 
+			</div> 
+			<button id="addFormButton" type="button">Add Another Form</button> 
+			<h2>Total Price: $<span id="totalPrice">
+				
+			</span>
+		</h2> 
+	</body> 
+	</html>

@@ -7,6 +7,7 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.javatpoint.LoginAndRegistrationPage.Entity_File.Flight;
 import com.javatpoint.LoginAndRegistrationPage.Entity_File.Passangers;
 import com.javatpoint.LoginAndRegistrationPage.Repositories.PassangerDetailsRepository;
 
@@ -51,6 +52,12 @@ public class PassengerDetailsService{
 				BookingidBuilder.append(characters.charAt(random.nextInt(characters.length()))); 
 				}
 			return BookingidBuilder.toString(); 
-		} 
+		}
+	
+	public List<Passangers> updateBookingStatus(String bookingID, String bookingNewStatus) { 
+		List<Passangers> passengers = PassangerDetailsRepo.findByBookingID(bookingID);
+		passengers.forEach(passenger -> passenger.setBookingStatus(bookingNewStatus));
+		return PassangerDetailsRepo.saveAll(passengers);
+		}
 	
 }

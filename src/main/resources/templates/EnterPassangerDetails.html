@@ -46,7 +46,11 @@
 					color: rgb(247, 228, 0);
 					background-color: black;
 				}							
-		
+				.inputFieldEnableButton:disabled{
+							cursor: not-allowed;
+							pointer-events: none;
+							color: rgb(255, 84, 32);
+						}
 	</style>
 </head>
 <body>
@@ -118,9 +122,9 @@
 		</div>
 	</div>
 	-->
-	<div><p> Number Passangers added : </p><div id="noOfPassengersAdded"></div></div>
+	<div><p> Number Passangers added : </p><div id="noOfPassengersAdded" th:text="${noOfPassengersAdded}"></div></div>
 	<div><p>Total Price : </p><div id="totalPrice"></div></div>
-	<button class="inputFieldEnableButton" onclick="addNewPassengerDetailsInputRow()"> Enter Passanger details</button>
+	<button class="inputFieldEnableButton" th:disabled="${Individualflight.NoOfSeatsAvailable<=noOfPassengersAdded}" onclick="addNewPassengerDetailsInputRow()"> Enter Passanger details</button>
 	<form th:action="@{/process_register_Passangerdetails}" th:object="${passengerdetails}" method="post">						
 		<div id="passengerDetailsFinal">  </div>
 		<!--<input type="hidden" th:field="*{UserID}" /> -->
@@ -130,12 +134,18 @@
 	</form>
 </div>
 
-<script>
+<script th:inline="javascript">
 	const flightCodeDisplay = document.getElementById('flightCode');
 	var flightCodeDisplayValue = flightCodeDisplay.textContent || flightCodeDisplay.innerText;
 	document.getElementById('selectedFlightCode').value = flightCodeDisplayValue;
 	var lineBreak =$("<br>");
 	function addNewPassengerDetailsInputRow(){
+		var availableSeatCount = /*[[${Individualflight.NoOfSeatsAvailable}]]*/0;
+		console.log(availableSeatCount);
+		const countDisplayDiv = document.getElementById('noOfPassengersAdded');
+		var addedPassengercount = countDisplayDiv.textContent || countDisplayDiv.innerText;
+		console.log(addedPassengercount);
+		if(availableSeatCount>addedPassengercount){
 					var createDivForPassengerDetails = $("<div></div>").addClass("passengerDetailsDiv");
 					var createFirstNameInput = $("<input></input>").addClass("firstName").val("Enter First Name").attr("id","firstName").attr("name","firstName").attr("type","text");
 					var createLastNameInput = $("<input></input>").addClass("lastName").val("Enter Last Name").attr("id","lastName").attr("name","lastName").attr("type","text");
@@ -169,7 +179,10 @@
 					});
 					$("#passengerDetailsFinal").append(createDivForPassengerDetails.append(createFirstNameInput, createLastNameInput,createEmailIDInput ,createAgeInput,createPassportNumberInput,createCustomerIDHiddenInput,createDeleteButton));
 								
+				}else{
+					alert("Seat count is not sufficient to add more passenger")
 				}
+			}
 				function countElementsWithClassName(className){
 					const passengerDetailsElement = document.getElementsByClassName(className);
 					return passengerDetailsElement.length;
@@ -179,7 +192,6 @@
 					const count = countElementsWithClassName(className);
 					const countDisplayDiv = document.getElementById('noOfPassengersAdded');
 					countDisplayDiv.textContent =count;
-					console.log(count);
 					const priceDisplay = document.getElementById('pricePerSeat');
 					var priceDisplayValue = priceDisplay.textContent || priceDisplay.innerText;
 					const totalPrice = count*priceDisplayValue;

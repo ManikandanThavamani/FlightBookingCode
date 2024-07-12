@@ -11,7 +11,7 @@ public interface PassangerDetailsRepository extends JpaRepository<Passangers, Lo
 	@Query("SELECT p FROM Passangers p WHERE p.passportNumber = ?1")
 	public Passangers findByPassportNumber(String passportNumber);
 	@Query("SELECT p FROM Passangers p WHERE p.BookingID = ?1")
-	public List<Passangers> findByBookingID(String BookingID);
+	public List<Passangers> findByBookingID(String bookingID);
 	@Query("SELECT p FROM Passangers p WHERE p.UserID = ?1")
 	public List<Passangers> findByCustomerID(Long UserID);
 	

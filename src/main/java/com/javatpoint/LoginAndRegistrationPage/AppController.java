@@ -50,7 +50,6 @@ public class AppController {
 	@GetMapping("/register")
 	public String showRegistrationForm(Model model) {
 		model.addAttribute("user", new User());
-		
 		return "signup_form";
 	}
 	
@@ -175,5 +174,18 @@ public class AppController {
 		model.addAttribute("listPassengers", passangers);
 		return "BookingHistory";
 	}
+	
+	@GetMapping("/CancelBookingSuccess")
+	public String CancelBookingSuccess(@RequestParam("BookingID") String bookingID,@RequestParam("selectedFlightCode") int selectedFlightCode, Model model) {
+		String BookingStatus = "Cancelled";
+		passengerDetailsService.updateBookingStatus(bookingID,BookingStatus);
+		List<Passangers> passengers =passengerDetailsService.getAllpassengersByBookingID(bookingID);
+		model.addAttribute("passengerList",passengers);
+		model.addAttribute("bookingID",bookingID);
+		int noOfPassengersTaggedToBookingID = passengers.size();
+		int newAvailableSeats = flightDetailsService.getFlightByFlightCode(selectedFlightCode).getNoOfSeatsAvailable() + noOfPassengersTaggedToBookingID;
+		flightDetailsService.updateAvailableSeats(selectedFlightCode, newAvailableSeats);
+        return "CancelBookingSuccess";
+    }
 
 }
